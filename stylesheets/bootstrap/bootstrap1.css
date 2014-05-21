@@ -401,6 +401,7 @@ h6,
   font-weight: 500;
   line-height: 1.1;
   color: inherit;
+  text-algin:center;
 }
 
 h1 small,
@@ -467,21 +468,28 @@ h6 .small {
 h1,
 .h1 {
   font-size: 36px;
+  text-algin:center;
 }
 
 h2,
 .h2 {
-  font-size: 30px;
+  font-size: 30px; 
+  padding-left:165px;
+  text-algin:center;
+  
 }
 
 h3,
 .h3 {
   font-size: 24px;
+
 }
 
 h4,
 .h4 {
   font-size: 18px;
+  padding-left:165px;
+  line-height: 1.3;
 }
 
 h5,
