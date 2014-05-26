@@ -19,7 +19,7 @@ h6{font-size:.75em;}*/
 #main-header .container{position:relative;z-index:2}#main-header:after{content:'';display:block;position:absolute;top:0;right:0;bottom:0;left:0;background:url(../images/evergreen.jpg) repeat center center;opacity:.6}#main-header h1{margin:.9em 0 .5em 0;letter-spacing:8px}#main-header p{font-weight:700}header{text-align:center}.body-header{margin:0 0 2em 0;}.call-to-action{background:#EDEFEE;padding:1em 0 1em 0;border-bottom:1px solid #ddd}.cta-container{width:90%;max-width:600px;margin:auto}.call-to-action p{float:left}.call-to-action a{float:right}.cta-2{border-bottom:0}#macbook{text-align:center;padding:4em 0 0 0}#macbook img{margin:5em 0 0 0;width:80%}
 
 
-#blurr{width:100%;text-align:center;position:relative;padding:4em 0 6em 0;color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25); 
+#blurr{width:100%;height:540px;text-align:center;position:relative;padding:4em 0 6em 0;color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25); 
         text-shadow:0 0 1px rgba(0,0,0,.05),0 1px 2px rgba(0,0,0,.3);}/*  background:#AA7742  */
 #blurr .container{position:relative;z-index:2}
 #blurr:after{content:'';display:block;position:absolute;top:0;right:0;bottom:0;left:0;
@@ -38,7 +38,7 @@ h6{font-size:.75em;}*/
 
 
 
-#jazz{width:100%;text-align:center;position:relative;padding:4em 0 6em 0;color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25); 
+#jazz{width:100%;height:540px;text-align:center;position:relative;padding:4em 0 6em 0;color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25); 
         text-shadow:0 0 1px rgba(0,0,0,.05),0 1px 2px rgba(0,0,0,.3);}/*  background:#AA7742  */
 #jazz .container{position:relative;z-index:2}
 #jazz:after{content:'';display:block;position:absolute;top:0;right:0;bottom:0;left:0;
