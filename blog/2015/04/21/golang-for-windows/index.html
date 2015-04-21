@@ -4,7 +4,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>昂信嵌入式 - 加速智能设备开发进程</title>
+  <title>Golang 编译windows应用程序 - 昂信嵌入式 - 加速智能设备开发进程</title>
   <meta name="author" content="苏州昂信科技有限公司">
 
   
@@ -16,7 +16,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.emsym.com/blog">
+  <link rel="canonical" href="http://www.emsym.com/blog/2015/04/21/golang-for-windows">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="昂信嵌入式" type="application/atom+xml">
 
@@ -62,11 +62,9 @@
 
       </header>
 
-          <div class="blog-index">
-  
-  
-  
-    <article>
+          <div class="row">
+  <div class="page-content col-md-9">
+    <article class="hentry" role="article">
       
   <header class="page-header">
     
@@ -89,12 +87,15 @@
       </p>
     
     
-      <h1 class="entry-title"><a href="/blog/2015/04/21/golang-for-windows/">Golang 编译windows应用程序</a></h1>
+    <h1 class="entry-title">
+        Golang 编译windows应用程序
+        
+    </h1>
     
   </header>
 
 
-  <div class="entry-content clearfix"><p>因为我们更喜欢在Linux上开发程序，
+<div class="entry-content clearfix"><p>因为我们更喜欢在Linux上开发程序，
 所以生成交叉编译器，以便在Linux上交叉编译出windows程序。</p>
 
 <div class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">#</span> 安装minGW：在Linux上运行gcc交叉编译生成windows程序
@@ -129,83 +130,51 @@
 <p>准备工作只有这么多了。通过指定pkgconfig的路径，就能够交叉编译Cgo程序了。
 <code>GOOS=windows GOARCH=386 PKG_CONFIG_PATH=/foo/bar go build</code></p>
 </div>
-  
-  
 
 
-    </article>
+      <footer>
+        <p class="meta text-muted">
+          
   
-  
-    <article>
-      
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
+
+<span class="glyphicon glyphicon-user"></span> <span class="byline author vcard">Posted by <span class="fn">苏州昂信科技有限公司</span></span>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2015-04-21T22:54:38+08:00" pubdate data-updated="true"></time>
+        </p>
         
-
-
-
-
-
-
-
-
-
-
-
-
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2015-04-20T23:08:17+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-    
-      <h1 class="entry-title"><a href="/blog/2015/04/20/migration-of-the-blog/">Blog系统迁移</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content clearfix"><p>我们将Blog系统，从wordpress迁移到Jekyll &amp; octopress。
-最大的好处是，可以在github编辑页面。</p>
-
-<p>几天之内，我们会将老系统的内容也复制过来。</p>
+          <div class="sharing">
+  
+  
+  
 </div>
-  
-  
 
-
+        
+        
+          <ul class="meta text-muted pager">
+            
+            <li class="previous"><a href="/blog/2015/04/20/migration-of-the-blog/" title="Previous Post: Blog系统迁移">&laquo; Blog系统迁移</a></li>
+            
+            
+          </ul>
+        
+      </footer>
     </article>
-  
-
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
     
   </div>
 </div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/04/21/golang-for-windows/">Golang 编译windows应用程序</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/04/20/migration-of-the-blog/">Blog系统迁移</a>
-      </li>
-    
-  </ul>
-</section>
-
-
-
-
-
-
-  
-</aside>
 
 
     <footer role="contentinfo"><div class="container">
