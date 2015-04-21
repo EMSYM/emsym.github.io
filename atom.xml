@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[昂信嵌入式]]></title>
-  <link href="http://www.emsym.com/atom.xml" rel="self"/>
-  <link href="http://www.emsym.com/"/>
-  <updated>2015-04-21T17:58:56+08:00</updated>
-  <id>http://www.emsym.com/</id>
+  <link href="http://emsym.github.io/atom.xml" rel="self"/>
+  <link href="http://emsym.github.io/"/>
+  <updated>2015-04-21T18:13:19+08:00</updated>
+  <id>http://emsym.github.io/</id>
   <author>
     <name><![CDATA[苏州昂信科技有限公司]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Blog系统迁移]]></title>
-    <link href="http://www.emsym.com/blog/2015/04/20/migration-of-the-blog/"/>
+    <link href="http://emsym.github.io/blog/2015/04/20/migration-of-the-blog/"/>
     <updated>2015-04-20T23:08:17+08:00</updated>
-    <id>http://www.emsym.com/blog/2015/04/20/migration-of-the-blog</id>
+    <id>http://emsym.github.io/blog/2015/04/20/migration-of-the-blog</id>
     <content type="html"><![CDATA[<p>我们将Blog系统，从wordpress迁移到Jekyll &amp; octopress。
 最大的好处是，可以在github编辑页面。</p>
 
