@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://emsym.github.io/sitemap.xml 
+Sitemap: http://www.emsym.com//sitemap.xml 
