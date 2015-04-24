@@ -16,7 +16,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.emsym.com">
+  <link rel="canonical" href="http://www.emsym.com/blog">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="昂信嵌入式" type="application/atom+xml">
 
@@ -72,79 +72,152 @@
 
       </header>
 
-          <section>
-	<div class="container">
-		<header class="body-header">
-			<h1>创新为您创造蓝海，我们将您的系统变为现实</h1>
-			<h1>嵌入式系统设计专家，可生产性倡导者</h1>
-		</header>
-		<div class="row">
-			<div class="col-sm-6">
-				<div style="background-image:url(/images/develop/yanfa.png);background-repeat:no-repeat;">
-					<h2>委托开发</h2>
-					<ul>
-						<li>嵌入式方案咨询</li>
-						<li>PCB设计</li>
-						<li>Linux,Android,WinCE移植</li>
-					</ul>
-				</div>
-			</div>
-			<div class="col-sm-6">
-				<div style="background-image:url(/images/develop/calendar.png);background-repeat:no-repeat;">
-					<h2>周期</h2>
-					<ul>
-						<li>依托苏州市嵌入式系统重点实验室</li>	
-						<li>拥有专业团队为您快速定制产品系统团队涉足嵌入式行业多年，实力雄厚</li>
-						<li>项目经验积累丰富结合丰富的生产经验，帮助客户迅速量产</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<div style="background-image:url(/images/develop/yanfa.png);background-repeat:no-repeat;">
-					<h2>成本</h2>
-					<ul>
-						<li>洞彻从立项、研发、制造的所有环节</li>
-						<li> 精审成本开支</li>
-						<li>为客户提供缜密的成本控制</li>
-					</ul>
-				</div>
-			</div>
-			<div class="col-sm-6">
-				<div style="background-image:url(/images/develop/calendar.png);background-repeat:no-repeat;">
-					<h2>成熟</h2>
-					<ul>
-						<li>久经考验的开发平台</li>
-						<li>秉承磐石般稳重的特性</li>
-						<li>最大限度的追求客户认可的可靠性平台</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>	
+          <div class="container">
+<div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2015-04-21T22:54:38+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+    
+      <h1 class="entry-title"><a href="/blog/2015/04/21/golang-for-windows/">Golang 编译windows应用程序</a></h1>
+    
+  </header>
+
+
+  <div class="entry-content clearfix"><p>因为我们更喜欢在Linux上开发程序，
+所以生成交叉编译器，以便在Linux上交叉编译出windows程序。</p>
+
+<div class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">#</span> 安装minGW：在Linux上运行gcc交叉编译生成windows程序
+<span class="gp">#</span> 我们用到Cgo，因此需要安装 C 语言交叉编译器
+<span class="go">sudo apt-get install gcc-mingw-w64</span>
+
+<span class="gp">#</span> 下载Go语言的源代码
+<span class="go">git clone https://github.com/golang/go.git</span>
+
+<span class="gp">#</span> 32-bit go-compiler <span class="k">for</span> windows
+<span class="go">GOOS=windows GOARCH=386 CGO_ENABLED=1 CXX_FOR_TARGET=i686-w64-mingw32-g++ CC_FOR_TARGET=i686-w64-mingw32-gcc ./make.bash</span>
+
+<span class="gp">#</span> 64-bit 编译器
+<span class="go">GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CXX_FOR_TARGET=x86_64-w64-mingw32-g++ CC_FOR_TARGET=x86_64-w64-mingw32-gcc ./make.bash </span>
+
+<span class="gp">#</span> 非交叉编译，生成Linux程序
+<span class="go">GOOS=linux GOARCH=amd64 CGO_ENABLED=1 CXX_FOR_TARGET=g++ CC_FOR_TARGET=gcc ./make.bash </span>
+
+<span class="gp">#</span> 生成Go编译器之后，以下命令执行交叉编译，生成windows程序
+<span class="go">GOOS=windows GOARCH=386 go build</span></code></pre></div>
+
+
+<h1>Cgo </h1>
+
+<p><img class="right" src="/assets/2015/ffmpeg-win.png" width="627">
+最终的目标是要生成windows程序，所以Cgo引用的库文件也必须是windows版本的。
+以ffmpeg库为例：参考截图，在ffmpeg文件夹之下，新建一个文件夹，名为libwin，
+用于保存windows版本的库文件（dll文件）。</p>
+
+<p>pkgconfig 也需要做相应调整。而头文件无需变动。</p>
+
+<p>准备工作只有这么多了。通过指定pkgconfig的路径，就能够交叉编译Cgo程序了。
+<code>GOOS=windows GOARCH=386 PKG_CONFIG_PATH=/foo/bar go build</code></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2015-04-20T23:08:17+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+    
+      <h1 class="entry-title"><a href="/blog/2015/04/20/migration-of-the-blog/">Blog系统迁移</a></h1>
+    
+  </header>
+
+
+  <div class="entry-content clearfix"><p>我们将Blog系统，从wordpress迁移到Jekyll &amp; octopress。
+最大的好处是，可以在github编辑页面。</p>
+
+<p>几天之内，我们会将老系统的内容也复制过来。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/04/21/golang-for-windows/">Golang 编译windows应用程序</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/20/migration-of-the-blog/">Blog系统迁移</a>
+      </li>
+    
+  </ul>
 </section>
 
-<section id="blurr">
-	<div class="container">
-		<h2>Blurr核心板</h2>
-		<h3>基于freescale i.MX6</h3>
-		<h3>同一平台兼容单核、双核、四核，<br>业界最齐全的外设，为您的应用平台带来无限的想象空间</h3>
-		<a class="btn" href="/products/blurr">Button</a>
-	</div>
-</section>
-
-<section id="jazz">
-	<div class="container">
-		<h2>JAZZ核心板</h2>
-		<h3>在这个需求便携移动的时代，Jazz应运而生。<br>
-        	锂电、WIFI以及丰富接口，令您的开发、学习拥有无线可能
-        </h3>
-		<a class="btn" href="/products/jazz">Button</a>
-	</div>
-</section>
 
 
+
+
+
+  
+</aside>
+</div>
 
     <footer role="contentinfo"><div class="container">
     <nav id="bottom" class="navbar navbar-inverse" role="navigation">	

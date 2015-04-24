@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[昂信嵌入式]]></title>
+  <link href="http://www.emsym.com/atom.xml" rel="self"/>
+  <link href="http://www.emsym.com/"/>
+  <updated>2015-04-24T23:59:35+08:00</updated>
+  <id>http://www.emsym.com/</id>
+  <author>
+    <name><![CDATA[苏州昂信科技有限公司]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Golang 编译windows应用程序]]></title>
+    <link href="http://www.emsym.com/blog/2015/04/21/golang-for-windows/"/>
+    <updated>2015-04-21T22:54:38+08:00</updated>
+    <id>http://www.emsym.com/blog/2015/04/21/golang-for-windows</id>
+    <content type="html"><![CDATA[<p>因为我们更喜欢在Linux上开发程序，
+所以生成交叉编译器，以便在Linux上交叉编译出windows程序。</p>
+
+<div class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">#</span> 安装minGW：在Linux上运行gcc交叉编译生成windows程序
+<span class="gp">#</span> 我们用到Cgo，因此需要安装 C 语言交叉编译器
+<span class="go">sudo apt-get install gcc-mingw-w64</span>
+
+<span class="gp">#</span> 下载Go语言的源代码
+<span class="go">git clone https://github.com/golang/go.git</span>
+
+<span class="gp">#</span> 32-bit go-compiler <span class="k">for</span> windows
+<span class="go">GOOS=windows GOARCH=386 CGO_ENABLED=1 CXX_FOR_TARGET=i686-w64-mingw32-g++ CC_FOR_TARGET=i686-w64-mingw32-gcc ./make.bash</span>
+
+<span class="gp">#</span> 64-bit 编译器
+<span class="go">GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CXX_FOR_TARGET=x86_64-w64-mingw32-g++ CC_FOR_TARGET=x86_64-w64-mingw32-gcc ./make.bash </span>
+
+<span class="gp">#</span> 非交叉编译，生成Linux程序
+<span class="go">GOOS=linux GOARCH=amd64 CGO_ENABLED=1 CXX_FOR_TARGET=g++ CC_FOR_TARGET=gcc ./make.bash </span>
+
+<span class="gp">#</span> 生成Go编译器之后，以下命令执行交叉编译，生成windows程序
+<span class="go">GOOS=windows GOARCH=386 go build</span></code></pre></div>
+
+
+<h1>Cgo </h1>
+
+<p><img class="right" src="http://www.emsym.com/assets/2015/ffmpeg-win.png" width="627">
+最终的目标是要生成windows程序，所以Cgo引用的库文件也必须是windows版本的。
+以ffmpeg库为例：参考截图，在ffmpeg文件夹之下，新建一个文件夹，名为libwin，
+用于保存windows版本的库文件（dll文件）。</p>
+
+<p>pkgconfig 也需要做相应调整。而头文件无需变动。</p>
+
+<p>准备工作只有这么多了。通过指定pkgconfig的路径，就能够交叉编译Cgo程序了。
+<code>GOOS=windows GOARCH=386 PKG_CONFIG_PATH=/foo/bar go build</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Blog系统迁移]]></title>
+    <link href="http://www.emsym.com/blog/2015/04/20/migration-of-the-blog/"/>
+    <updated>2015-04-20T23:08:17+08:00</updated>
+    <id>http://www.emsym.com/blog/2015/04/20/migration-of-the-blog</id>
+    <content type="html"><![CDATA[<p>我们将Blog系统，从wordpress迁移到Jekyll &amp; octopress。
+最大的好处是，可以在github编辑页面。</p>
+
+<p>几天之内，我们会将老系统的内容也复制过来。</p>
+]]></content>
+  </entry>
+  
+</feed>
