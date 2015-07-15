@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7" xmlns:wb="http://open.weibo.com/wb"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8" xmlns:wb="http://open.weibo.com/wb"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb="http://open.weibo.com/wb"><!--<![endif]-->
+<html xmlns:wb="http://open.weibo.com/wb">
+  <meta charset="utf-8">
+  <title>
+		java基础之JNI原理
+	
+  </title>
+  <meta name="author" content="苏州昂信科技有限公司">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.emsym.com/blog/2015/07/03/javaji-chu-zhi-jniyuan-li">
+  <link href="/favicon.png" type="image/png" rel="icon">
+  <link href="/atom.xml" rel="alternate" title="昂信嵌入式" type="application/atom+xml">
+
+  <meta name="renderer" content="webkit">
+<meta property="wb:webmaster" content="432b3dbfc4405367" />
+<!--  
+<link href="/javascripts/libs/bootstrap-3.0.0/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/javascripts/libs/bootstrap-3.0.0/dist/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" -->  
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+
+
+  <script src="http://libs.baidu.com/jquery/2.0.3/jquery.min.js"></script>
+  
+
+</head>
+
+  <body   >
+    <div id="wrap">
+      <header role="banner">
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+							<img src="/images/logo.png" width="218px" alt="昂信嵌入式"/>
+						</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/products/blurr/">Blurr</a></li>
+                <li><a href="/products/jazz/">Jazz</a></li>
+                <li><a href="/blog">实验室</a></li>
+                <li><a href="/doc">文档</a></li>
+                <li><a href="http://menuconfig.cn">问答</a></li>
+            </ul>
+						
+        </div>
+    </div>
+</nav>
+
+
+      </header>
+
+          <div class="container">
+<div class="row">
+  <div class="page-content
+   
+  ">
+    <article class="hentry" role="article">
+      
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> 
+<time datetime="2015-07-03T00:43:59+08:00" pubdate data-updated="true">
+2015-07-03
+</time>
+
+
+        
+      </p>
+    
+    
+    <h1 class="entry-title">
+        java基础之JNI原理
+        
+    </h1>
+    
+  </header>
+
+
+<div class="entry-content clearfix"><p>利用JNI实现安卓的Java代码调用C语言API。</p>
+
+<!--more-->
+
+
+<p>JNI是Java Native Interface的缩写，也就是Java本地接口的意思。Java为什么需要JNI这种呢？我们知道Java是一种平台无关性的语言，平台对于上层的java代码来说是透明的，在大部分的情况下是不需要JNI的，但是我们可能遇到如下一下情况:</p>
+
+<p>1.java代码需要得到一个文件的属性，但是找不到相关的API；</p>
+
+<p>2.在java代码中需要用到某种算法，但是这种算法时用C实现并封装在动态链接库文件中的。</p>
+
+<p>如果没有JNI，上面的问题就会变得很棘手.举个例子说明:在Android中我们想要操作串口的时候会发现当前的Android SDK并没有提供任何写串口的API，对于底层的串口操作需要使用C来完成。而Android的应用程序是基于java实现的，应用程序想要访问到串口就需要JNI技术了。</p>
+
+<p>接下来通过实际的例子来说明java如何通过JNI实现C\C++的函数调用</p>
+
+<h5>1.开发环境介绍：主机系统为64位Ubuntu 14.04， jdk版本jdk1.8.0_45。</h5>
+
+
+
+
+<h5>2.程序清单1～/jni_test/com/magc/jni/HelloWorld.java</h5>
+
+
+
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">magc</span><span class="o">.</span><span class="na">jni</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorld</span>
+<span class="o">{</span>
+    <span class="kd">static</span>
+    <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">&quot;Hello&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">native</span> <span class="kt">void</span> <span class="nf">DisplayHello</span><span class="o">();</span>
+    
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">new</span> <span class="nf">HelloWorld</span><span class="o">().</span><span class="na">DisplayHello</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></div>
+
+
+
+
+<h5>3.进如jni目录后，编译该java类，命令：</h5>
+
+
+<p><code>javac HelloWorld.java</code></p>
+
+<p>执行后在该目录下生成 HelloWorld.class 文件</p>
+
+<h5>4.进入jni_test目录，使用javah命令生成头文件：</h5>
+
+
+<p><code>javah -jni com.magc.jni.HelloWorld</code></p>
+
+<p>在当前目录下生成 com_magc_jni_HelloWrold.h 头文件</p>
+
+<h5>5.程序清单2 com_magc_jni_HelloWrold.h</h5>
+
+
+
+
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/* DO NOT EDIT THIS FILE - it is machine generated */</span>
+<span class="cp">#include &lt;jni.h&gt;</span>
+<span class="cm">/* Header for class com_magc_jni_HelloWorld */</span>
+
+<span class="cp">#ifndef _Included_com_magc_jni_HelloWorld</span>
+<span class="cp">#define _Included_com_magc_jni_HelloWorld</span>
+<span class="cp">#ifdef __cplusplus</span>
+<span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
+<span class="cp">#endif</span>
+    
+<span class="cm">/*</span>
+<span class="cm"> * Class:     com_magc_jni_HelloWorld</span>
+<span class="cm"> * Method:    DisplayHello</span>
+<span class="cm"> * Signature: ()V</span>
+<span class="cm"> */</span>
+    
+<span class="n">JNIEXPORT</span> <span class="kt">void</span> <span class="n">JNICALL</span> <span class="n">Java_com_magc_jni_HelloWorld_DisplayHello</span>
+    <span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="p">,</span> <span class="n">jobject</span><span class="p">);</span>
+
+<span class="cp">#ifdef __cplusplus</span>
+<span class="p">}</span>
+<span class="cp">#endif</span>
+<span class="cp">#endif</span></code></pre></div>
+
+
+<p>此头文件中的Java_com_magc_jni_HelloWorld_DisplayHello(JNIEnv *, jobject)方法，是将来与动态链接库交互的接口，并需要名字保持一致。</p>
+
+<h5>6.程序清单3 jni_HelloWroldlmpl.cpp</h5>
+
+
+<p>在jni_test目录下新建jni_HelloWroldlmpl.cpp源文件</p>
+
+<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;jni.h&gt;</span>
+<span class="cp">#include &quot;com_magc_jni_HelloWorld.h&quot;</span>
+<span class="cp">#include &quot;stdio.h&quot;</span>
+
+<span class="n">JNIEXPORT</span> <span class="kt">void</span> <span class="n">JNICALL</span> <span class="nf">Java_com_magc_jni_HelloWorld_DisplayHello</span>
+    <span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="p">,</span> <span class="n">jobject</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;From jni_helloworldImpl.cpp :&quot;</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello world !</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span></code></pre></div>
+
+
+<p>此C++文件实现了上述头文件中的函数，注意方法函数名要保持一致。</p>
+
+<h5>7.编译生成动态库libHello.so,命令：</h5>
+
+
+<p><code>g++ jni_helloworldImpl.cpp -o libHello.so</code></p>
+
+<p>成功后，便会在当前目录下生成动态链接库libHello.so文件。</p>
+
+<p>本人在执行这一步的过程中遇到了头文件&#8221;jni.h&#8221;和&#8221;jni_md.h&#8221;未找到的情况，这两个头文件路径伟jdk安装目录下include 及include/linux
+使用&#8221;g++ -shared -I 头文件路径&#8221;解决.</p>
+
+<h5>8.有了具体实现的动态库后，就可以运行JAVA调用JNI程序类的native方法了。命令：</h5>
+
+
+<p><code>java -Djava.library.path=. com.magc.jni.HelloWorld</code></p>
+
+<p>输入结果即为：From jni_helloworldImpl.cpp :Hello world !</p>
+</div>
+
+
+      <footer>
+        <p class="meta text-muted">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> 
+<time datetime="2015-07-03T00:43:59+08:00" pubdate data-updated="true">
+2015-07-03
+</time>
+
+
+          
+
+
+  
+
+
+	
+		
+	
+		
+	
+		
+			
+				<span class="glyphicon glyphicon-user"></span> 
+				<span class="byline author vcard">作者 <span class="fn">Wang</span></span>
+			
+			
+				<wb:follow-button uid="5651612623" type="red_4" height="64" width="100%"></wb:follow-button>
+			
+		
+	
+
+
+
+
+
+        </p>
+        
+          <div class="sharing">
+  
+  
+  
+</div>
+
+        
+        
+          <ul class="meta text-muted pager">
+            
+            <li class="previous"><a href="/blog/2015/06/05/rtu/" title="Previous Post: RTU">&laquo; RTU</a></li>
+            
+            
+          </ul>
+        
+	
+
+
+
+<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js?appkey=211137401" type="text/javascript" charset="utf-8"></script>
+<wb:comments url="http://www.emsym.com/blog/2015/07/03/javaji-chu-zhi-jniyuan-li/" border="y" width="auto" appkey="211137401" ></wb:comments>
+
+
+
+      </footer>
+    </article>
+    
+  </div>
+</div>
+</div>
+
+
+    <footer role="contentinfo"><div class="container">
+    <nav id="bottom" class="navbar navbar-inverse" role="navigation">	
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-sm-4 ">
+				<h1>联系我们</h1>
+			</div>
+			<div class="col-xs-6 col-sm-4  c-img">
+				<img src="/images/weixin.jpg"/>
+				<div>
+					<a href="http://wei.emsym.com">微信号</a>
+				</div>
+			</div>
+			<div class="col-xs-6 col-sm-4  c-img">
+				<img src="/images/phone.jpg">
+				<div><a href="#">fae@emsym.com</a></div>
+			</div>
+		</div>
+		<p class="">
+			Copyright &copy; 2015 - 苏州昂信科技有限公司<br>
+			<small>
+				<a href="http://www.miibeian.gov.cn/">苏ICP备09077265号</a>
+				<span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+				<span class="credit">customized with <a href="https://github.com/mjhea0/octoplate">Octoplate</a></span>
+			</small>
+		</p>
+	</div>
+</nav>
+
+</div>
+</footer>
+    <!-- <script src="/javascripts/libs/bootstrap-3.0.0/dist/js/bootstrap.min.js"></script -->
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<script src="/javascripts/modernizr-2.0.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+  </body>
+</html>
